@@ -11,8 +11,8 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import cv2
-from a02_custom_metrics import precision,recall,F2_score
-from a01_custom_layer import Scale
+from custom_metrics import precision,recall,F2_score
+from custom_layer import Scale
 
 def output_labels(i,model=dense):
     weather_, land_ = model.predict(X_val[i].reshape(1,256,256,3))
@@ -47,7 +47,7 @@ land_use = ['primary', 'agriculture', 'road', 'water','cultivation', 'habitation
         'conventional_mine', 'selective_logging', 'artisinal_mine', 'blooming','slash_burn', 'blow_down' ]
 read = lambda i: cv2.imread(kaggle_path+f'test_clean/test_{i}.jpg')
 
-dense = load_model('b01_dense121.h5',custom_objects={'F2_score': F2_score,'Scale':Scale})
+dense = load_model('dense121.h5',custom_objects={'F2_score': F2_score,'Scale':Scale})
 X_val = np.array(list(map(read,range(8000))))
 
 test = pd.DataFrame(data=list(map(output_labels,range(0,10000))),columns = ['tags'])
