@@ -1,40 +1,19 @@
-## Goals
+## Detecting Illegal Mining with Planet Satellite Imagery
 
-Given a set of labeled satellite image chips, the project aims to develop an algorithm for labeling unlabeled image chips. The primary focus is on detecting the occurrence of 'artisanal mining,' commonly referred to as illegal mining, among a set of 16 labels categorized into three main groups: <span style="color:SALMON">  atmospheric conditions</span>,  <span style="color:LightSkyBlue"> common land uses</span> and  <span style="color:Plum"> rare land uses</span>. Image chips may receive none or more than one label from these groups.
+**Aim**: Identify illegal ("artisanal") mining operations across thousands of high-resolution satellite image chips.
 
-The main objectives include:
+**Challenges:** 
 
-1. **Train a Model with Labeled Image Chips:**
-    - Develop an algorithm that effectively labels unlabeled satellite image chips, considering atmospheric conditions and land uses as label categories.
-2. **Detection of Artisanal Mining (Illegal Mining):**
-    - Create a model that reliably identifies the presence of 'artisanal mining' (illegal mining) as one of the rare labels among others.
-    - Differentiate between various classes of land cover and land use, emphasizing the detection of illegal mining activities.
-3. **Improved Understanding of Environmental Conditions:**
-    - Utilize the model to enhance the understanding of environmental conditions, particularly in relation to deforestation and illegal mining activities on a global scale.
-    - Contribute to the identification and interpretation of patterns and causes of deforestation through the labeled satellite imagery.
+1. **Severe Class Imbalance:** Artisanal mining accounts for <1% of total labeled samples.  
+2. **Multi-Label Complexity:** Images contain overlapping atmospheric and land-use tags.  
+3. **Atmospheric Interference:** Dense haze and cloud cover significantly degrade visual feature clarity.
 
+The challenge of the project lies in addressing the highly imbalanced distribution of data labels among the 16 groups. Specifically, the difficulty arises from the fact that the 'artisanal mine' label constitutes less than 1% of the total population. 
 
-
-## Challenge
-
-The challenge of the project lies in addressing the highly imbalanced distribution of data labels among the 16 groups. Specifically, the difficulty arises from the fact that the 'artisanal mine' label constitutes less than 1% of the total population.
+### EDA
 
 <p float="left">
     <img src="https://live.staticflickr.com/65535/49626992868_557450fa33.jpg" width="50%" />  <img src="https://lh3.googleusercontent.com/jn0yWdVFz-RplTsir-DZcRs0UYWSouwjwhknKi3J6-f-o4TPWBlL2AGNsKQa0NIBkPJ66XfUfKrB03-BmHo8vDq2dJhf6lZLRuhQmluBukP2V979NtW7NZ-5odX8mhEru029s6PDy40" width="49%" /> <em>Left Figure 1: Examples of image chips with labels.   Right Figure 2: Frequency distribution of labels</em></p>
-###### Key Challenges:
-
-1. **Blurry Image Challenge:**
-    - A significant amount of satellite image chips appears to be blurry. Therefore a dehazing function may be necessary to enhance the clarity of these images before feeding them into the model.
-    - Addressing blurry images is crucial for ensuring that the model can effectively learn and make accurate predictions, particularly in regions where haziness may impact the interpretability of features.
-2. **Imbalanced Data Distribution:**
-    - Imbalanced data can lead to model bias, where the model may struggle to accurately identify and classify the minority class due to insufficient examples for learning.
-3. **Model Training Complexity:**
-    - The model needs to be trained to handle the rarity of the 'artisanal mine' label while maintaining performance across the other more prevalent labels.
-4. **Data Augmentation and Sampling Strategies:**
-    - Balancing techniques, such as oversampling, undersampling, or the use of synthetic data, may need to be implemented to ensure fair learning across all classes.
-
-
-
 ## System Requirement
 
 AWS GPU instance (Amazon Cloud service) :
@@ -46,10 +25,6 @@ AWS GPU instance (Amazon Cloud service) :
 Python Packages: , Keras 2.1.6, Tensorflow, opencv
 
 Data Source  "[Planet: Understanding the Amazon from Space](https://www.kaggle.com/c/planet-understanding-the-amazon-from-space)"
-
-
-
-
 
 ## Process Image
 
@@ -143,5 +118,3 @@ After training the DenseNet model on the dehazed image sets, the model was saved
 The dehaze function is based on  ["Single Image Haze Removal using Dark Channel Prior"](https://projectsweb.cs.washington.edu/research/insects/CVPR2009/award/hazeremv_drkchnl.pdf) paper.
 
 Satellite images often suffer from darkness and blurriness caused by atmospheric turbulence. However, by mitigating the effects of haze and improving image quality, we can enhance the performance of neural networks. Leveraging my understanding of atmospheric physics and conducting research on Google Scholars, I developed a dehaze function based on a [paper](https://www.robots.ox.ac.uk/~vgg/rg/papers/hazeremoval.pdf) to address this challenge. Haze results from the scattering of light in the atmosphere before it reaches the camera. To estimate the intensity of scattered light, a constant value is derived by approximating the maximum pixel intensity within the darkest RGB channel. By utilizing OpenCV to convert images to a colorspace matrix and calculating the haze constant, we can restore the image by subtracting this value. As a result, the dehazed image appears brighter and exhibits better contrast, improving the quality of input data for neural networks.
-
-![How hazy image is formed](https://www.researchgate.net/profile/Seung_Won_Jung2/publication/291385074/figure/fig14/AS:320880610693124@1453515307125/Formation-of-a-hazy-image.png)
